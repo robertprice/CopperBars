@@ -147,11 +147,11 @@ exit:
 ; d0 - the scanline to wait for
 ; trashes d1
 WaitRaster:
-.l:         move.l      $dff004,d1
+            move.l      CUSTOM+VPOSR,d1
             lsr.l       #1,d1
             lsr.w       #7,d1
             cmp.w       d0,d1
-            bne.s       .l                             ;wait until it matches (eq)
+            bne.s       WaitRaster                     ;wait until it matches (eq)
             rts
 
 ;------------------------
