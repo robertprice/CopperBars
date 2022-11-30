@@ -12,11 +12,11 @@
             INCLUDE     "hardware/cia.i"
 ;---------- Const ----------
 
-CIAA		EQU $bfe001
+CIAA        EQU $bfe001
 
             SECTION music,DATA_C
 
-mt_data:	INCBIN	"mod.DoSong"						; our music mod file to play
+mt_data:    INCBIN	"mod.DoSong"						; our music mod file to play
 
             SECTION Code,CODE,CHIP
 
@@ -40,19 +40,20 @@ init:
             movem.l 	(sp)+,d0-a6
 
 
-            move.w      INTENAR(a6),INTENARSave        ; Copie de la valeur des interruptions
-            move.w      DMACONR(a6),DMACONSave         ; sauvegarde du dmacon
-            move.w      #$138,d0                       ; wait for eoframe paramètre pour la routine de WaitRaster - position à attendre
-            bsr.w       WaitRaster                     ; Appel de la routine wait raster - bsr = jmp,mais pour des adresses moins distantes
-            move.w      #$7fff,INTENA(a6)              ; désactivation de toutes les interruptions bits : valeur + masque sur 7b
+            move.w      INTENAR(a6),INTENARSave        ; Save original interupts
+            move.w      DMACONR(a6),DMACONSave         ; Save DMACON
+            move.w      #$138,d0                       ; wait for eoframe
+            bsr.w       WaitRaster                     
+            move.w      #$7fff,INTENA(a6)              ; disable interupts
             move.w      #$7fff,INTREQ(a6)              ; disable all bits in INTREQ
-            move.w      #$7fff,INTREQ(a6)              ; disable all bits in INTREQ
-            move.w      #$7fff,DMACON(a6)              ; disable all bits in DMACON
-            move.w      #$87e0,DMACON(a6)              ; Activation classique pour démo
+;            move.w      #$7fff,INTREQ(a6)              ; disable all bits in INTREQ
+;            move.w      #$7fff,DMACON(a6)              ; disable all bits in DMACON
+;            move.w      #$87e0,DMACON(a6)              ; Activation classique pour démo
+            move.w      #%1000011111100000,DMACON(a6)
 
 ; install our copper list
             move.l      #myCopperList,COP1LC(a6)
-            move.w      0,COPJMP1(a6)
+            move.w      #0,COPJMP1(a6)
 ******************************************************************
 mainloop:
 
